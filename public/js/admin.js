@@ -102,11 +102,31 @@ function adminEditUser(userId) {
     alert('Edit user functionality would open a modal for user ID: ' + userId);
 }
 
-function adminDeleteUser(userId) {
-    if (window.blastKeunApp && window.blastKeunApp.adminUI) {
-        if (confirm('Are you sure you want to delete this user?')) {
-            alert('Delete user functionality for ID: ' + userId);
+async function adminDeleteUser(userId) {
+    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+        return;
+    }
+
+    try {
+        const app = window.blastKeunApp;
+        const response = await fetch(`${app.auth.apiBaseUrl}/api/admin/users/${userId}`, {
+            method: 'DELETE',
+            headers: app.auth.getAuthHeaders()
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert('User deleted successfully!');
+            // Reload users list
+            if (app.adminUI) {
+                app.adminUI.loadUsers();
+            }
+        } else {
+            alert('Error: ' + data.error);
         }
+    } catch (error) {
+        alert('Error: ' + error.message);
     }
 }
 
@@ -116,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (addUserForm) {
         addUserForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const formData = new FormData(addUserForm);
             const userData = {
                 username: formData.get('username'),
@@ -124,12 +144,41 @@ document.addEventListener('DOMContentLoaded', () => {
                 email: formData.get('email'),
                 full_name: formData.get('full_name'),
                 role: formData.get('role'),
-                max_messages_per_day: parseInt(formData.get('max_messages_per_day')),
-                max_contacts_per_session: parseInt(formData.get('max_contacts_per_session'))
+                max_messages_per_day: parseInt(formData.get('max_messages_per_day')) || 50,
+                max_contacts_per_session: parseInt(formData.get('max_contacts_per_session')) || 15
             };
 
-            alert('User creation functionality would be implemented here');
-            closeModal('addUserModal');
+            // Validation
+            if (!userData.username || !userData.password) {
+                alert('Username and password are required');
+                return;
+            }
+
+            try {
+                const app = window.blastKeunApp;
+                const response = await fetch(`${app.auth.apiBaseUrl}/api/admin/users`, {
+                    method: 'POST',
+                    headers: app.auth.getAuthHeaders(),
+                    body: JSON.stringify(userData)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    alert('User created successfully!');
+                    closeModal('addUserModal');
+                    addUserForm.reset();
+
+                    // Reload users list
+                    if (app.adminUI) {
+                        app.adminUI.loadUsers();
+                    }
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
         });
     }
 });

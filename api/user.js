@@ -21,16 +21,33 @@ router.get('/stats', async (req, res) => {
     try {
         const stats = await authManager.getUserStats(req.user.id);
         const dailyStats = await blastManager.getUserDailyStats(req.user.id);
-        
-        res.json({ 
-            success: true, 
-            stats: stats[0] || {}, 
-            dailyStats 
+
+        res.json({
+            success: true,
+            stats: stats[0] || {},
+            dailyStats
         });
     } catch (error) {
-        res.status(500).json({ 
-            success: false, 
-            error: error.message 
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+// Regenerate API key
+router.post('/regenerate-api-key', async (req, res) => {
+    try {
+        const newApiKey = await authManager.regenerateApiKey(req.user.id);
+        res.json({
+            success: true,
+            api_key: newApiKey,
+            message: 'API key regenerated successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
         });
     }
 });
