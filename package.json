@@ -1,5 +1,5 @@
 {
-  "name": "blastkeun-vercel",
+  "name": "blastkeun",
   "version": "2.0.0",
   "description": "WhatsApp Blast System with Dual Modes",
   "main": "api/index.js",
@@ -17,6 +17,8 @@
     "csv-parser": "3.0.0",
     "qrcode-terminal": "0.12.0",
     "whatsapp-web.js": "1.23.0",
+    "puppeteer-core": "^21.6.1",
+    "chrome-aws-lambda": "^10.1.0",
     "moment": "2.29.4"
   },
   "engines": {
