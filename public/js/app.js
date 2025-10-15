@@ -333,4 +333,5 @@ let blastKeunApp;
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🔧 DOM loaded, initializing app...');
     blastKeunApp = new BlastKeunApp();
+    window.blastKeunApp = blastKeunApp;
 });
