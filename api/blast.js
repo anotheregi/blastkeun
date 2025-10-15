@@ -19,6 +19,31 @@ router.get('/connection-status', (req, res) => {
     res.json({ success: true, ...status });
 });
 
+// Get QR code for WhatsApp authentication
+router.get('/qr-code', (req, res) => {
+    const qrData = blastManager.getQRCode();
+    res.json({ success: true, ...qrData });
+});
+
+// Clear WhatsApp session
+router.post('/clear-session', requireAuth, (req, res) => {
+    try {
+        // Note: In serverless, this might not persist across deployments
+        const sessionStore = require('../utils/session-store');
+        sessionStore.clear();
+
+        res.json({
+            success: true,
+            message: 'Session cleared. Restart app to generate new QR code.'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
 // Get session status
 router.get('/session-status', requireAuth, (req, res) => {
     const sessions = blastManager.getUserSessionStatus(req.user.id);
