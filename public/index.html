@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLASTKEUN - WhatsApp Blast System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1><i class="fab fa-whatsapp"></i> BLASTKEUN</h1>
+                <p>WhatsApp Blast System</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" class="form-control" id="username" required value="admin">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" id="password" required value="admin123">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <div class="login-info" style="margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 5px; text-align: center;">
+                    <small>Default: admin / admin123</small>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="appContainer" class="app-container" style="display: none;">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fab fa-whatsapp"></i> BLASTKEUN</h3>
+                <small>v2.0.0</small>
+                <small>made with 🤍 by moreegih</small>
+            </div>
+            <ul class="sidebar-menu">
+                <li><a href="#dashboard" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="#blast"><i class="fas fa-paper-plane"></i> Blast Message</a></li>
+                <li><a href="#contacts"><i class="fas fa-users"></i> Kontak</a></li>
+                <li><a href="#templates"><i class="fas fa-file-alt"></i> Template</a></li>
+                <li><a href="#api"><i class="fas fa-key"></i> API Key</a></li>
+                <li id="adminMenu" style="display: none;"><a href="#admin"><i class="fas fa-cog"></i> Admin Panel</a></li>
+                <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Navbar -->
+            <div class="navbar">
+                <h3 id="pageTitle">Dashboard</h3>
+                <div class="user-info">
+                    <div class="avatar" id="userAvatar">A</div>
+                    <div>
+                        <div id="userName">Admin</div>
+                        <small id="userRole">admin</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard -->
+            <div id="dashboard" class="tab-content active">
+                <div class="dashboard-cards">
+                    <div class="card stat-card">
+                        <div class="stat-number" id="totalSessions">0</div>
+                        <div class="stat-label">Total Sessions</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-number" id="totalMessages">0</div>
+                        <div class="stat-label">Total Pesan</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-number" id="successRate">0%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                    <div class="card stat-card">
+                        <div class="stat-number" id="dailyLimit">0/1000</div>
+                        <div class="stat-label">Daily Limit</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>WhatsApp Connection Status</h4>
+                    <div id="connectionStatus" class="status-box">
+                        <div id="statusText">Checking connection...</div>
+                        <div id="qrContainer" class="qr-container" style="display: none; margin-top: 15px;">
+                            <p>Scan QR Code dengan WhatsApp:</p>
+                            <div id="qrcode" class="qr-code" style="background: white; padding: 20px; border-radius: 10px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>Aktivitas Terbaru</h4>
+                    <div class="table-container">
+                        <table id="recentActivity">
+                            <thead>
+                                <tr>
+                                    <th>Session</th>
+                                    <th>Mode</th>
+                                    <th>Pesan</th>
+                                    <th>Status</th>
+                                    <th>Waktu</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="5" style="text-align: center;">Tidak ada aktivitas</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Blast Message -->
+            <div id="blast" class="tab-content">
+                <div class="card">
+                    <h4><i class="fas fa-paper-plane"></i> Blast Message</h4>
+                    
+                    <!-- Mode Selection -->
+                    <div class="form-group">
+                        <label>Pilih Mode Blast:</label>
+                        <div class="mode-selection">
+                            <div class="mode-card" data-mode="v1" onclick="selectMode('v1')">
+                                <div class="mode-header v1-header">
+                                    <h5><i class="fas fa-bolt"></i> Standard Mode</h5>
+                                    <small>Untuk akun WhatsApp lama</small>
+                                </div>
+                                <div class="mode-body">
+                                    <div class="mode-features">
+                                        <div><i class="fas fa-clock"></i> Delay 15-60 detik</div>
+                                        <div><i class="fas fa-envelope"></i> 50 pesan/session</div>
+                                        <div><i class="fas fa-calendar-day"></i> 200 pesan/hari</div>
+                                        <div><i class="fas fa-user"></i> Basic simulation</div>
+                                    </div>
+                                    <div class="mode-stats">
+                                        <small>Hari ini: <span id="v1Today">0</span>/200 pesan</small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mode-card" data-mode="v2" onclick="selectMode('v2')">
+                                <div class="mode-header v2-header">
+                                    <h5><i class="fas fa-shield-alt"></i> Safe Mode</h5>
+                                    <small>Untuk akun WhatsApp baru</small>
+                                </div>
+                                <div class="mode-body">
+                                    <div class="mode-features">
+                                        <div><i class="fas fa-clock"></i> Delay 45-180 detik</div>
+                                        <div><i class="fas fa-envelope"></i> 15 pesan/session</div>
+                                        <div><i class="fas fa-calendar-day"></i> 50 pesan/hari</div>
+                                        <div><i class="fas fa-robot"></i> Advanced simulation</div>
+                                    </div>
+                                    <div class="mode-stats">
+                                        <small>Hari ini: <span id="v2Today">0</span>/50 pesan</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mode Info -->
+                    <div id="modeInfo" class="alert alert-info">
+                        <div id="modeInfoContent">Pilih mode blast di atas</div>
+                    </div>
+
+                    <!-- Blast Configuration -->
+                    <div class="blast-configuration">
+                        <div class="form-group">
+                            <label for="contactsFile">Upload Kontak (CSV):</label>
+                            <input type="file" id="contactsFile" accept=".csv" class="form-control">
+                            <small>Format: phone,name,company (phone harus format 62...)</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="messageTemplate">Pesan Template:</label>
+                            <textarea id="messageTemplate" class="form-control" rows="5" 
+                                placeholder="Tulis pesan Anda di sini... Gunakan {{name}} untuk personalisasi">Halo {{name}}, ini adalah pesan test dari BLASTKEUN.</textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Kontak yang akan dikirim:</label>
+                            <div id="contactList" class="contact-list">
+                                <div class="text-muted">Belum ada kontak</div>
+                            </div>
+                        </div>
+
+                        <!-- Session Controls -->
+                        <div class="session-controls">
+                            <button id="startBlastBtn" class="btn btn-primary" onclick="startBlastSession()">
+                                <i class="fas fa-play"></i> Mulai Blast Session
+                            </button>
+                            <button id="stopBlastBtn" class="btn btn-danger" onclick="stopBlastSession()" style="display: none;">
+                                <i class="fas fa-stop"></i> Hentikan Session
+                            </button>
+                            <button id="testBlastBtn" class="btn btn-warning" onclick="testBlastMessage()">
+                                <i class="fas fa-vial"></i> Test Pesan
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Session Progress -->
+                    <div id="sessionProgress" class="card session-progress">
+                        <h5>Progress Session</h5>
+                        <div class="progress">
+                            <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                        </div>
+                        <div id="progressText">Mempersiapkan...</div>
+                        <div id="sessionDetails"></div>
+                    </div>
+
+                    <!-- Session Log -->
+                    <div id="sessionLog" class="card session-log">
+                        <h5>Log Session</h5>
+                        <div id="logContent" class="log-content"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Key -->
+            <div id="api" class="tab-content">
+                <div class="card">
+                    <h4><i class="fas fa-key"></i> API Key Management</h4>
+                    <div class="form-group">
+                        <label>Your API Key:</label>
+                        <div class="api-key-box" id="apiKeyDisplay">Loading...</div>
+                    </div>
+                    <button class="btn btn-primary" onclick="generateNewApiKey()">
+                        <i class="fas fa-sync"></i> Generate New API Key
+                    </button>
+                    
+                    <div class="api-docs">
+                        <h5>API Documentation:</h5>
+                        <div class="code-block">
+                            <pre><code>// Send blast message
+curl -X POST \
+  -H "X-API-Key: your-api-key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "contacts": [
+      {"phone":"6281234567890","name":"Test User"}
+    ],
+    "message": "Halo {{name}}, ini pesan test",
+    "mode": "v2"
+  }' \
+  https://egikeren.gg/api/blast/send</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Panel -->
+            <div id="admin" class="tab-content">
+                <div class="card">
+                    <h4><i class="fas fa-cog"></i> User Management</h4>
+                    <button class="btn btn-primary" onclick="showAddUserModal()">
+                        <i class="fas fa-plus"></i> Tambah User
+                    </button>
+                    
+                    <div class="table-container">
+                        <table id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Limits</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fas fa-chart-bar"></i> System Statistics</h4>
+                    <div id="systemStats">
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-number" id="totalUsers">0</div>
+                                <div class="stat-label">Total Users</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="totalBlastSessions">0</div>
+                                <div class="stat-label">Total Sessions</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-number" id="totalMessagesSent">0</div>
+                                <div class="stat-label">Messages Sent</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <h4>Add New User</h4>
+            <form id="addUserForm">
+                <div class="form-group">
+                    <label>Username *</label>
+                    <input type="text" class="form-control" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password *</label>
+                    <input type="password" class="form-control" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" name="email">
+                </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" class="form-control" name="full_name">
+                </div>
+                <div class="form-group">
+                    <label>Role</label>
+                    <select class="form-control" name="role">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Max Messages Per Day</label>
+                    <input type="number" class="form-control" name="max_messages_per_day" value="50">
+                </div>
+                <div class="form-group">
+                    <label>Max Contacts Per Session</label>
+                    <input type="number" class="form-control" name="max_contacts_per_session" value="15">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('addUserModal')">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+    <script src="/js/blast.js"></script>
+    <script src="/js/admin.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html>
